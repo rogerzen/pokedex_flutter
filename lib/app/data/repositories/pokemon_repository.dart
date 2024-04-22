@@ -17,16 +17,19 @@ class PokemonRepository implements IPokemonReposity {
   @override
   Future<List<PokemonModel>> getPokemon() async {
     final response =
-        await client.get(url: 'https://pokeapi.co/api/v2/pokemon?limit=1500');
+        await client.get(url: 'https://pokeapi.co/api/v2/pokemon?limit=649');
 
     if (response.statusCode == 200) {
       final List<PokemonModel> pokemons = [];
 
-      final body = jsonDecode(response.body);
-      body['results'].map((item) {
-        final PokemonModel pokemon = PokemonModel.fromMap(item);
-        pokemons.add(pokemon);
-      }).toList();
+      final json = jsonDecode(response.body);
+      final body = json['results'];
+
+      for (int i = 0; i < body.length; i++) {
+        PokemonModel pokemonmodel = PokemonModel.fromMap(body[i],
+            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${i + 1}.svg');
+        pokemons.add(pokemonmodel);
+      }
 
       return pokemons;
     } else if (response.statusCode == 404) {
