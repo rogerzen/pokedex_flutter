@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pokedex_flutter/app/components/card_widget.dart';
 import 'package:pokedex_flutter/app/data/http/http_client.dart';
 import 'package:pokedex_flutter/app/data/repositories/pokemon_repository.dart';
@@ -14,7 +15,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final PokeStore store = PokeStore(
+  final PokemonStore store = PokemonStore(
     repository: PokemonRepository(
       client: HttpClient(),
     ),
@@ -34,17 +35,15 @@ class _MyHomePageState extends State<MyHomePage> {
           'PokeFlutter',
         ),
       ),
-      body: ListenableBuilder(
-        listenable:
-            Listenable.merge([store.isLoading, store.erro, store.state]),
-        builder: (context, child) {
-          if (store.isLoading.value) {
+      body: Observer(
+        builder: (context) {
+          if (store.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (store.erro.value.isNotEmpty) {
+          if (store.erro.isNotEmpty) {
             return Center(
               child: Text(
-                store.erro.value,
+                store.erro,
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
@@ -54,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             );
           }
-          if (store.state.value.isEmpty) {
+          if (store.state.isEmpty) {
             return const Center(
               child: Text(
                 'Nenhum Pokemon na lista',
@@ -71,9 +70,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 32,
               ),
               padding: const EdgeInsets.all(8),
-              itemCount: store.state.value.length,
+              itemCount: store.state.length,
               itemBuilder: (_, index) {
-                final item = store.state.value[index];
+                final item = store.state[index];
                 final itemCount = index + 1;
                 return CardPokemon(
                     name: item.name,
