@@ -68,14 +68,15 @@ class CardDetails extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Divider(color: Colors.black, height: 24),
-
+              const Divider(color: Colors.red, height: 24),
               const Row(
                 children: [
                   Text(
                     'Informações:',
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.w500, fontSize: 25),
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 25),
                   ),
                 ],
               ),
@@ -88,7 +89,6 @@ class CardDetails extends StatelessWidget {
               Row(
                 children: [
                   const Icon(Icons.arrow_right),
-
                   TextDetails(
                     title: 'Peso: ',
                     secondText: ((weight) / 1000).toString(),
@@ -106,11 +106,13 @@ class CardDetails extends StatelessWidget {
                   ),
                 ],
               ),
-              const Divider(color: Colors.black, height: 24),
+              const Divider(color: Colors.red, height: 24),
               const Text(
                 'Tipo:',
                 style: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w500, fontSize: 25),
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 25),
               ),
               ListView.builder(
                 padding: EdgeInsets.zero,
@@ -131,11 +133,13 @@ class CardDetails extends StatelessWidget {
                   );
                 },
               ),
-              const Divider(color: Colors.black, height: 24),
+              const Divider(color: Colors.red, height: 24),
               const Text(
                 'Habilidades:',
                 style: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w500, fontSize: 25),
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 25),
               ),
               ListView.builder(
                 padding: EdgeInsets.zero,

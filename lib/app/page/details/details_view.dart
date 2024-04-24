@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pokedex_flutter/app/components/card_details.dart';
 import 'package:pokedex_flutter/app/data/http/http_client.dart';
 import 'package:pokedex_flutter/app/data/repositories/pokemon_detail_repository.dart';
@@ -15,12 +16,12 @@ class DetailsPokemonView extends StatefulWidget {
 }
 
 class _DetailsPokemonViewState extends State<DetailsPokemonView> {
-  late final PokeDetailStore store;
+  late final PokeDetailsStore store;
 
   @override
   void initState() {
     super.initState();
-    store = PokeDetailStore(
+    store = PokeDetailsStore(
       repository: PokemonRepository(client: HttpClient(), model: widget.model),
     );
     store.getPokemonDetails();
@@ -30,18 +31,14 @@ class _DetailsPokemonViewState extends State<DetailsPokemonView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: AnimatedBuilder(
-          animation: Listenable.merge([
-            store.isLoading,
-            store.erro,
-          ]),
-          builder: (context, child) {
-            if (store.isLoading.value) {
+        child: Observer(
+          builder: (context) {
+            if (store.isLoading) {
               return const Center(child: CircularProgressIndicator());
             }
-            if (store.erro.value.isNotEmpty) {
+            if (store.erro.isNotEmpty) {
               return Text(
-                store.erro.value,
+                store.erro,
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
@@ -50,7 +47,7 @@ class _DetailsPokemonViewState extends State<DetailsPokemonView> {
                 textAlign: TextAlign.center,
               );
             } else {
-              PokemonModel entity = store.value;
+              PokemonModel entity = store.state!;
 
               return SizedBox(
                 width: MediaQuery.of(context).size.width,

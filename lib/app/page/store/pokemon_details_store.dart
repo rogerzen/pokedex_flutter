@@ -1,32 +1,39 @@
-import 'package:flutter/material.dart';
+import 'package:mobx/mobx.dart';
 import 'package:pokedex_flutter/app/data/http/exceptions.dart';
 
+import '../../data/models/pokemon_model.dart';
 import '../../data/repositories/pokemon_detail_repository.dart';
 
-class PokeDetailStore extends ValueNotifier {
+part 'pokemon_details_store.g.dart';
+
+class PokeDetailsStore = _PokeDetailsStore with _$PokeDetailsStore;
+
+abstract class _PokeDetailsStore with Store {
   final IPokemonDetailRepository repository;
 
-  // Carregando:
-  final ValueNotifier<bool> isLoading = ValueNotifier(false);
+  _PokeDetailsStore({required this.repository});
 
-  // erro:
-  final ValueNotifier<String> erro = ValueNotifier<String>('');
+  @observable
+  bool isLoading = false;
 
-  PokeDetailStore({required this.repository}) : super(repository);
+  @observable
+  String erro = '';
 
+  @observable
+  PokemonModel? state;
+
+  @action
   Future getPokemonDetails() async {
-    isLoading.value = true;
+    isLoading = true;
 
     try {
       final result = await repository.getPokemonDetails();
-      value = result;
+      state = result;
     } on NotFoundException catch (e) {
-      erro.value = e.message;
+      erro = e.message;
     } catch (e) {
-      erro.value = e.toString();
+      erro = e.toString();
     }
-    isLoading.value = false;
+    isLoading = false;
   }
-
-  get countPokemon => value.length;
 }
