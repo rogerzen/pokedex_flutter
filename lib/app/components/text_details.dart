@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class TextDetails extends StatefulWidget {
   final String title;
@@ -27,9 +28,7 @@ class _TextDetailsState extends State<TextDetails> {
           TextSpan(
             text: widget.title,
             style: const TextStyle(
-                color: Colors.black54,
-                fontWeight: FontWeight.w500,
-                fontSize: 25),
+                color: Colors.black, fontWeight: FontWeight.w500, fontSize: 25),
           ),
           TextSpan(
             text: widget.secondText,
