@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pokedex_flutter/app/components/card_widget.dart';
-import 'package:pokedex_flutter/app/data/http/http_client.dart';
-import 'package:pokedex_flutter/app/data/repositories/pokemon_repository.dart';
+import 'package:pokedex_flutter/app/page/store/pokemon_details_store.dart';
 import 'package:pokedex_flutter/app/page/store/pokemon_store.dart';
+import 'package:provider/provider.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({
+class PokedexView extends StatefulWidget {
+  const PokedexView({
     super.key,
   });
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<PokedexView> createState() => _PokedexViewState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  final PokemonStore store = PokemonStore(
-    repository: PokemonRepository(
-      client: HttpClient(),
-    ),
-  );
+class _PokedexViewState extends State<PokedexView> {
+  late final PokemonStore store;
+
   @override
   void initState() {
     super.initState();
-    store.getPokemons();
+    store = Provider.of<PokemonStore>(context, listen: false);
   }
 
   @override
@@ -31,8 +28,20 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text(
-          'PokeFlutter',
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 30,
+              child: Hero(
+                  tag: 'imageSplash',
+                  child: Image.asset('./assets/pokemon_logo.png')),
+            ),
+            const SizedBox(width: 20),
+            const Text(
+              'PokeFlutter',
+            ),
+          ],
         ),
       ),
       body: Observer(
@@ -70,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 32,
               ),
               padding: const EdgeInsets.all(8),
-              itemCount: store.state.length,
+              itemCount: 649,
               itemBuilder: (_, index) {
                 final item = store.state[index];
                 final itemCount = index + 1;
