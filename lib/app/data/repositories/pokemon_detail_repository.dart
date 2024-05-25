@@ -4,6 +4,7 @@ import 'package:pokedex_flutter/app/data/http/exceptions.dart';
 import 'package:pokedex_flutter/app/data/http/http_client.dart';
 import 'package:pokedex_flutter/app/data/models/pokemon_model.dart';
 import 'package:pokedex_flutter/app/data/models/types_pokemon_model.dart';
+import 'package:pokedex_flutter/consts/pokeapi.dart';
 
 import '../models/abilities_pokemon_model.dart';
 
@@ -13,7 +14,6 @@ abstract class IPokemonDetailRepository {
 
 class PokemonRepository implements IPokemonDetailRepository {
   final IHttpClient client;
-
   final PokemonModel model;
 
   PokemonRepository({required this.client, required this.model});
@@ -21,7 +21,7 @@ class PokemonRepository implements IPokemonDetailRepository {
   @override
   Future<PokemonModel> getPokemonDetails() async {
     final response =
-        await client.get(url: 'https://pokeapi.co/api/v2/pokemon/${model.id}');
+        await client.get(url: PokeApi.detailsURL + model.id.toString());
 
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
