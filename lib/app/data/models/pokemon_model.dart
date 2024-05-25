@@ -23,16 +23,23 @@ class PokemonModel {
     required this.abilities,
   });
 
-  factory PokemonModel.fromMap(Map<String, dynamic> map, String image) {
+  factory PokemonModel.fromMap(
+      Map<String, dynamic> map,
+      String image,
+      int id,
+      int weight,
+      int height,
+      List<TypesPokemon> types,
+      List<AbilitiesPokemon> abilities) {
     return PokemonModel(
       url: map['url'],
       name: map['name'],
       image: image,
-      id: 0,
-      weight: 0,
-      height: 0,
-      types: [],
-      abilities: [],
+      id: id,
+      weight: weight,
+      height: height,
+      types: types,
+      abilities: abilities,
     );
   }
 }

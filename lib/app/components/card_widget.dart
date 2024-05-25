@@ -8,6 +8,7 @@ import '../page/details/details_view.dart';
 
 class CardPokemon extends StatelessWidget {
   final String name;
+  final Color? colorType;
   final String url;
   final String image;
   final int id;
@@ -18,6 +19,7 @@ class CardPokemon extends StatelessWidget {
 
   const CardPokemon(
       {super.key,
+      this.colorType,
       required this.name,
       required this.url,
       required this.image,
@@ -72,14 +74,37 @@ class CardPokemon extends StatelessWidget {
                     flex: 3,
                     child: ListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        name.toUpperCase(),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20,
-                        ),
+                      title: Column(
+                        children: [
+                          Text(
+                            name.toUpperCase(),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                            ),
+                          ),
+                          ListView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            itemCount: types.length,
+                            itemBuilder: (context, index) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    types[index].name,
+                                    style: TextStyle(
+                                        color: colorType ?? Colors.black54,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 25),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
                   ),

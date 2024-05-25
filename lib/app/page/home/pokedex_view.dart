@@ -4,6 +4,8 @@ import 'package:pokedex_flutter/app/components/card_widget.dart';
 import 'package:pokedex_flutter/app/page/store/pokemon_store.dart';
 import 'package:provider/provider.dart';
 
+import '../../config/app_colors.dart';
+
 class PokedexView extends StatefulWidget {
   const PokedexView({
     super.key,
@@ -82,7 +84,13 @@ class _PokedexViewState extends State<PokedexView> {
               itemBuilder: (_, index) {
                 final item = store.state[index];
                 final itemCount = index + 1;
+                final String primaryType =
+                    item.types.isNotEmpty ? item.types[0].name : 'normal';
+
+                final Color colorCard =
+                    AppColors.typeColors[primaryType] ?? Colors.grey;
                 return CardPokemon(
+                    colorType: colorCard,
                     name: item.name,
                     url: item.url,
                     image: item.image,

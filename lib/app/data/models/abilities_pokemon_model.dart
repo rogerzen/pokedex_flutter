@@ -2,11 +2,14 @@ class AbilitiesPokemon {
   final String name;
 
   AbilitiesPokemon({required this.name});
+
   static List<AbilitiesPokemon> jsonToModelAbilities(json) {
-    List<AbilitiesPokemon> typesList = [];
+    List<AbilitiesPokemon> abilitiesList = [];
+
     for (var entity in json) {
-      typesList.add(AbilitiesPokemon(name: entity['ability']['name']));
+      abilitiesList.add(AbilitiesPokemon(name: entity['ability']['name']));
     }
-    return typesList;
+
+    return abilitiesList;
   }
 }
