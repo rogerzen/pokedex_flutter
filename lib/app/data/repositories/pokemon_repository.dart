@@ -48,14 +48,8 @@ class PokemonRepository implements IPokemonReposity {
           final List<AbilitiesPokemon> abilities =
               AbilitiesPokemon.jsonToModelAbilities(pokemonJson['abilities']);
 
-          final pokemonModel = PokemonModel.fromMap(
-              body[i],
-              'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/$id.svg',
-              id,
-              weight,
-              height,
-              types,
-              abilities);
+          final pokemonModel = PokemonModel.fromMap(body[i],
+              getImagePokemon(id), id, weight, height, types, abilities);
 
           pokemons.add(pokemonModel);
         }
