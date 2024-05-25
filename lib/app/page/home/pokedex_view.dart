@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pokedex_flutter/app/components/card_widget.dart';
-import 'package:pokedex_flutter/app/page/store/pokemon_details_store.dart';
 import 'package:pokedex_flutter/app/page/store/pokemon_store.dart';
 import 'package:provider/provider.dart';
 

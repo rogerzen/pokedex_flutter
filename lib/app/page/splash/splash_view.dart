@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex_flutter/app/page/home/pokedex_view.dart';
-import 'package:pokedex_flutter/app/page/store/pokemon_details_store.dart';
 import 'package:provider/provider.dart';
 
 import '../store/pokemon_store.dart';
