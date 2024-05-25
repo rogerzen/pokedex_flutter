@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:pokedex_flutter/app/consts/pokeapi.dart';
 import 'package:pokedex_flutter/app/data/http/exceptions.dart';
 import 'package:pokedex_flutter/app/data/http/http_client.dart';
 
@@ -16,10 +17,10 @@ class PokemonRepository implements IPokemonReposity {
 
   @override
   Future<List<PokemonModel>> getPokemon() async {
-    int pokenumber = 649;
+    int pokenumber = 650;
 
-    final response = await client.get(
-        url: 'https://pokeapi.co/api/v2/pokemon?limit=$pokenumber');
+    final response =
+        await client.get(url: PokeApi.pokemonsURL + pokenumber.toString());
 
     if (response.statusCode == 200) {
       final List<PokemonModel> pokemons = [];
