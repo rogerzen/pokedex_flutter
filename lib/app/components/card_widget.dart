@@ -57,7 +57,7 @@ class CardPokemon extends StatelessWidget {
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           child: ColoredBox(
-            color: Colors.grey.shade200,
+            color: colorType ?? Colors.grey.shade200,
             child: Padding(
               padding: const EdgeInsets.only(
                   right: 12, left: 12, top: 30, bottom: 30),
@@ -95,8 +95,8 @@ class CardPokemon extends StatelessWidget {
                                 children: [
                                   Text(
                                     types[index].name,
-                                    style: TextStyle(
-                                        color: colorType ?? Colors.black54,
+                                    style: const TextStyle(
+                                        color: Colors.black54,
                                         fontWeight: FontWeight.w500,
                                         fontSize: 25),
                                   ),
