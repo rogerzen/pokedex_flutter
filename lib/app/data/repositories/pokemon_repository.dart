@@ -20,10 +20,8 @@ class PokemonRepository implements IPokemonReposity {
 
   @override
   Future<List<PokemonModel>> getPokemon() async {
-    int pokenumber = 650;
-
-    final response =
-        await client.get(url: '${PokeApi.pokemonsURL}?limit=$pokenumber');
+    final response = await client.get(
+        url: PokeApi.pokemonsURL + PokeApi.pokeNumber.toString());
 
     if (response.statusCode == 200) {
       final List<PokemonModel> pokemons = [];

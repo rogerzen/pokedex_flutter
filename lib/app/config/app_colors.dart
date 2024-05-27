@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  static const white = Color(0xFFFFFFFF);
+
   static const Map<String, Color> typeColors = {
     'grass': Color(0xFF78C850),
     'fire': Color(0xFFF08030),

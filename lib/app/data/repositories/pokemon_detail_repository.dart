@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:pokedex_flutter/app/consts/pokeapi.dart';
 import 'package:pokedex_flutter/app/data/http/exceptions.dart';
 import 'package:pokedex_flutter/app/data/http/http_client.dart';
 import 'package:pokedex_flutter/app/data/models/pokemon_model.dart';
 import 'package:pokedex_flutter/app/data/models/types_pokemon_model.dart';
-import 'package:pokedex_flutter/consts/pokeapi.dart';
 
 import '../models/abilities_pokemon_model.dart';
 

@@ -17,6 +17,7 @@ class PokedexView extends StatefulWidget {
 
 class _PokedexViewState extends State<PokedexView> {
   late final PokemonStore store;
+  final _searchPokemon = TextEditingController();
 
   @override
   void initState() {
@@ -45,64 +46,87 @@ class _PokedexViewState extends State<PokedexView> {
           ],
         ),
       ),
-      body: Observer(
-        builder: (context) {
-          if (store.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (store.erro.isNotEmpty) {
-            return Center(
-              child: Text(
-                store.erro,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            );
-          }
-          if (store.state.isEmpty) {
-            return const Center(
-              child: Text(
-                'Nenhum Pokemon na lista',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
-                ),
-              ),
-            );
-          } else {
-            return ListView.separated(
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 32,
-              ),
-              padding: const EdgeInsets.all(8),
-              itemCount: 649,
-              itemBuilder: (_, index) {
-                final item = store.state[index];
-                final itemCount = index + 1;
-                final String primaryType =
-                    item.types.isNotEmpty ? item.types[0].name : 'normal';
+      body: Column(
+        children: [
+          Container(
+            margin:
+                const EdgeInsets.only(top: 32, bottom: 16, left: 16, right: 16),
+            child: TextField(
+              controller: _searchPokemon,
+              decoration: const InputDecoration(
+                  hintText: 'pesquise um pokemon',
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black)),
+                  hintStyle: TextStyle(color: Colors.white54)),
+            ),
+          ),
+          Expanded(
+            child: Observer(
+              builder: (context) {
+                if (store.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (store.erro.isNotEmpty) {
+                  return Center(
+                    child: Text(
+                      store.erro,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+                if (store.state.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Nenhum Pokemon na lista',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20,
+                      ),
+                    ),
+                  );
+                } else {
+                  return GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, // Colunas
+                            crossAxisSpacing: 0, // Entre Colunas
+                            childAspectRatio: 0.7,
+                            mainAxisSpacing: 10),
+                    padding: const EdgeInsets.all(8),
+                    itemCount: store.state.length,
+                    itemBuilder: (_, index) {
+                      final item = store.state[index];
+                      final itemCount = index + 1;
 
-                final Color colorCard =
-                    AppColors.typeColors[primaryType] ?? Colors.grey;
-                return CardPokemon(
-                    colorType: colorCard,
-                    name: item.name,
-                    url: item.url,
-                    image: item.image,
-                    id: itemCount,
-                    weight: item.weight,
-                    height: item.height,
-                    types: item.types,
-                    abilities: item.abilities);
+                      final String primaryType =
+                          item.types.isNotEmpty ? item.types[0].name : 'normal';
+
+                      final Color colorCard =
+                          AppColors.typeColors[primaryType] ?? Colors.grey;
+
+                      return CardPokemon(
+                          colorType: colorCard,
+                          name: item.name,
+                          url: item.url,
+                          image: item.image,
+                          id: itemCount,
+                          weight: item.weight,
+                          height: item.height,
+                          types: item.types,
+                          abilities: item.abilities);
+                    },
+                  );
+                }
               },
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
