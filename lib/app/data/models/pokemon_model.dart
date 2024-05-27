@@ -45,28 +45,4 @@ class PokemonModel {
       abilities: abilities,
     );
   }
-
-  PokemonModel copyWith({
-    String? name,
-    String? url,
-    int? id,
-    String? image,
-    int? weight,
-    int? height,
-    List<TypesPokemon>? types,
-    List<AbilitiesPokemon>? abilities,
-    String? key,
-  }) {
-    return PokemonModel(
-      name: name ?? this.name,
-      url: url ?? this.url,
-      id: id ?? this.id,
-      image: image ?? this.image,
-      weight: weight ?? this.weight,
-      height: height ?? this.height,
-      types: types ?? this.types,
-      abilities: abilities ?? this.abilities,
-      key: key ?? this.key,
-    );
-  }
 }

@@ -16,26 +16,15 @@ class PokedexView extends StatefulWidget {
 class _PokedexViewState extends State<PokedexView> {
   late final PokemonStore store;
 
-  final TextEditingController _searchPokemonController =
-      TextEditingController();
-
   @override
   void initState() {
     super.initState();
     store = Provider.of<PokemonStore>(context, listen: false);
-    _searchPokemonController.addListener(_onSearchChanged);
   }
 
   @override
   void dispose() {
-    _searchPokemonController.removeListener(_onSearchChanged);
-    _searchPokemonController.dispose();
     super.dispose();
-  }
-
-  void _onSearchChanged() {
-    final pokemonSearch = _searchPokemonController.text.trim();
-    store.filterPokemons(pokemonSearch);
   }
 
   @override
@@ -64,7 +53,9 @@ class _PokedexViewState extends State<PokedexView> {
             margin:
                 const EdgeInsets.only(top: 32, bottom: 16, left: 16, right: 16),
             child: TextField(
-              controller: _searchPokemonController,
+              onChanged: (pokemon) {
+                store.setSearchPokemon(pokemon);
+              },
               decoration: const InputDecoration(
                 hintText: 'Pesquise um Pokemon',
                 border: OutlineInputBorder(
