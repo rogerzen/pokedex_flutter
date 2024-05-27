@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../../config/app_colors.dart';
 
 class PokedexView extends StatefulWidget {
-  const PokedexView({Key? key}) : super(key: key);
+  const PokedexView({super.key});
 
   @override
   State<PokedexView> createState() => _PokedexViewState();
@@ -15,26 +15,27 @@ class PokedexView extends StatefulWidget {
 
 class _PokedexViewState extends State<PokedexView> {
   late final PokemonStore store;
-  final TextEditingController _searchController = TextEditingController();
+
+  final TextEditingController _searchPokemonController =
+      TextEditingController();
 
   @override
   void initState() {
     super.initState();
     store = Provider.of<PokemonStore>(context, listen: false);
-    _searchController.addListener(_onSearchChanged);
-    store.getPokemons(); // Fetch Pokémon data initially
+    _searchPokemonController.addListener(_onSearchChanged);
   }
 
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchChanged);
-    _searchController.dispose();
+    _searchPokemonController.removeListener(_onSearchChanged);
+    _searchPokemonController.dispose();
     super.dispose();
   }
 
   void _onSearchChanged() {
-    final query = _searchController.text.trim();
-    store.filterPokemons(query);
+    final pokemonSearch = _searchPokemonController.text.trim();
+    store.filterPokemons(pokemonSearch);
   }
 
   @override
@@ -63,13 +64,13 @@ class _PokedexViewState extends State<PokedexView> {
             margin:
                 const EdgeInsets.only(top: 32, bottom: 16, left: 16, right: 16),
             child: TextField(
-              controller: _searchController,
+              controller: _searchPokemonController,
               decoration: const InputDecoration(
                 hintText: 'Pesquise um Pokemon',
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black),
                 ),
-                hintStyle: TextStyle(color: Colors.white54),
+                hintStyle: TextStyle(color: Colors.black54),
               ),
             ),
           ),
