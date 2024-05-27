@@ -11,8 +11,10 @@ class PokemonModel {
   final int height;
   final List<TypesPokemon> types;
   final List<AbilitiesPokemon> abilities;
+  final String? key;
 
   PokemonModel({
+    this.key,
     required this.name,
     required this.url,
     required this.image,
@@ -34,12 +36,37 @@ class PokemonModel {
     return PokemonModel(
       url: map['url'],
       name: map['name'],
+      key: map['name'],
       image: image,
       id: id,
       weight: weight,
       height: height,
       types: types,
       abilities: abilities,
+    );
+  }
+
+  PokemonModel copyWith({
+    String? name,
+    String? url,
+    int? id,
+    String? image,
+    int? weight,
+    int? height,
+    List<TypesPokemon>? types,
+    List<AbilitiesPokemon>? abilities,
+    String? key,
+  }) {
+    return PokemonModel(
+      name: name ?? this.name,
+      url: url ?? this.url,
+      id: id ?? this.id,
+      image: image ?? this.image,
+      weight: weight ?? this.weight,
+      height: height ?? this.height,
+      types: types ?? this.types,
+      abilities: abilities ?? this.abilities,
+      key: key ?? this.key,
     );
   }
 }

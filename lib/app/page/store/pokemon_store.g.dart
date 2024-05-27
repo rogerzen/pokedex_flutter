@@ -16,6 +16,13 @@ mixin _$PokemonStore on _PokemonStore, Store {
       (_$countPokemonComputed ??= Computed<int>(() => super.countPokemon,
               name: '_PokemonStore.countPokemon'))
           .value;
+  Computed<List<PokemonModel>>? _$filteredPokemonsComputed;
+
+  @override
+  List<PokemonModel> get filteredPokemons => (_$filteredPokemonsComputed ??=
+          Computed<List<PokemonModel>>(() => super.filteredPokemons,
+              name: '_PokemonStore.filteredPokemons'))
+      .value;
 
   late final _$isLoadingAtom =
       Atom(name: '_PokemonStore.isLoading', context: context);
@@ -63,6 +70,22 @@ mixin _$PokemonStore on _PokemonStore, Store {
     });
   }
 
+  late final _$searchPokemonAtom =
+      Atom(name: '_PokemonStore.searchPokemon', context: context);
+
+  @override
+  String get searchPokemon {
+    _$searchPokemonAtom.reportRead();
+    return super.searchPokemon;
+  }
+
+  @override
+  set searchPokemon(String value) {
+    _$searchPokemonAtom.reportWrite(value, super.searchPokemon, () {
+      super.searchPokemon = value;
+    });
+  }
+
   late final _$getPokemonsAsyncAction =
       AsyncAction('_PokemonStore.getPokemons', context: context);
 
@@ -71,13 +94,40 @@ mixin _$PokemonStore on _PokemonStore, Store {
     return _$getPokemonsAsyncAction.run(() => super.getPokemons());
   }
 
+  late final _$_PokemonStoreActionController =
+      ActionController(name: '_PokemonStore', context: context);
+
+  @override
+  void setSearchPokemon(String pokemon) {
+    final _$actionInfo = _$_PokemonStoreActionController.startAction(
+        name: '_PokemonStore.setSearchPokemon');
+    try {
+      return super.setSearchPokemon(pokemon);
+    } finally {
+      _$_PokemonStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void filterPokemons(String pokemon) {
+    final _$actionInfo = _$_PokemonStoreActionController.startAction(
+        name: '_PokemonStore.filterPokemons');
+    try {
+      return super.filterPokemons(pokemon);
+    } finally {
+      _$_PokemonStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 isLoading: ${isLoading},
 state: ${state},
 erro: ${erro},
-countPokemon: ${countPokemon}
+searchPokemon: ${searchPokemon},
+countPokemon: ${countPokemon},
+filteredPokemons: ${filteredPokemons}
     ''';
   }
 }

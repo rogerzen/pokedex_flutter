@@ -20,8 +20,7 @@ class PokemonRepository implements IPokemonDetailRepository {
 
   @override
   Future<PokemonModel> getPokemonDetails() async {
-    final response =
-        await client.get(url: PokeApi.detailsURL + model.id.toString());
+    final response = await client.get(url: PokeApi.detailsURL + model.name);
 
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);

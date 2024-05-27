@@ -7,9 +7,7 @@ import 'package:provider/provider.dart';
 import '../../config/app_colors.dart';
 
 class PokedexView extends StatefulWidget {
-  const PokedexView({
-    super.key,
-  });
+  const PokedexView({Key? key}) : super(key: key);
 
   @override
   State<PokedexView> createState() => _PokedexViewState();
@@ -17,12 +15,26 @@ class PokedexView extends StatefulWidget {
 
 class _PokedexViewState extends State<PokedexView> {
   late final PokemonStore store;
-  final _searchPokemon = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     store = Provider.of<PokemonStore>(context, listen: false);
+    _searchController.addListener(_onSearchChanged);
+    store.getPokemons(); // Fetch Pokémon data initially
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.trim();
+    store.filterPokemons(query);
   }
 
   @override
@@ -36,13 +48,12 @@ class _PokedexViewState extends State<PokedexView> {
             SizedBox(
               width: 30,
               child: Hero(
-                  tag: 'imageSplash',
-                  child: Image.asset('./assets/pokemon_logo.png')),
+                tag: 'imageSplash',
+                child: Image.asset('./assets/pokemon_logo.png'),
+              ),
             ),
             const SizedBox(width: 20),
-            const Text(
-              'PokeFlutter',
-            ),
+            const Text('PokeFlutter'),
           ],
         ),
       ),
@@ -52,12 +63,14 @@ class _PokedexViewState extends State<PokedexView> {
             margin:
                 const EdgeInsets.only(top: 32, bottom: 16, left: 16, right: 16),
             child: TextField(
-              controller: _searchPokemon,
+              controller: _searchController,
               decoration: const InputDecoration(
-                  hintText: 'pesquise um pokemon',
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black)),
-                  hintStyle: TextStyle(color: Colors.white54)),
+                hintText: 'Pesquise um Pokemon',
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black),
+                ),
+                hintStyle: TextStyle(color: Colors.white54),
+              ),
             ),
           ),
           Expanded(
@@ -79,7 +92,8 @@ class _PokedexViewState extends State<PokedexView> {
                     ),
                   );
                 }
-                if (store.state.isEmpty) {
+                final filteredPokemon = store.filteredPokemons;
+                if (filteredPokemon.isEmpty) {
                   return const Center(
                     child: Text(
                       'Nenhum Pokemon na lista',
@@ -94,14 +108,15 @@ class _PokedexViewState extends State<PokedexView> {
                   return GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, // Colunas
-                            crossAxisSpacing: 0, // Entre Colunas
-                            childAspectRatio: 0.7,
-                            mainAxisSpacing: 10),
+                      crossAxisCount: 2, // Colunas
+                      crossAxisSpacing: 0, // Entre Colunas
+                      childAspectRatio: 0.7,
+                      mainAxisSpacing: 10,
+                    ),
                     padding: const EdgeInsets.all(8),
-                    itemCount: store.state.length,
+                    itemCount: filteredPokemon.length,
                     itemBuilder: (_, index) {
-                      final item = store.state[index];
+                      final item = filteredPokemon[index];
                       final itemCount = index + 1;
 
                       final String primaryType =
@@ -111,15 +126,17 @@ class _PokedexViewState extends State<PokedexView> {
                           AppColors.typeColors[primaryType] ?? Colors.grey;
 
                       return CardPokemon(
-                          colorType: colorCard,
-                          name: item.name,
-                          url: item.url,
-                          image: item.image,
-                          id: itemCount,
-                          weight: item.weight,
-                          height: item.height,
-                          types: item.types,
-                          abilities: item.abilities);
+                        key: ValueKey(item.key),
+                        colorType: colorCard,
+                        name: item.name,
+                        url: item.url,
+                        image: item.image,
+                        id: itemCount,
+                        weight: item.weight,
+                        height: item.height,
+                        types: item.types,
+                        abilities: item.abilities,
+                      );
                     },
                   );
                 }

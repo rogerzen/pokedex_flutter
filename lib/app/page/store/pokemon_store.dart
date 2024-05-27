@@ -21,8 +21,23 @@ abstract class _PokemonStore with Store {
   @observable
   String erro = '';
 
+  @observable
+  String searchPokemon = '';
+
   @computed
   int get countPokemon => state.length;
+
+  @computed
+  List<PokemonModel> get filteredPokemons {
+    if (searchPokemon.isEmpty) {
+      return state;
+    } else {
+      return state
+          .where((pokemon) =>
+              pokemon.name.toLowerCase().contains(searchPokemon.toLowerCase()))
+          .toList();
+    }
+  }
 
   @action
   Future<void> getPokemons() async {
@@ -36,5 +51,15 @@ abstract class _PokemonStore with Store {
       erro = e.toString();
     }
     isLoading = false;
+  }
+
+  @action
+  void setSearchPokemon(String pokemon) {
+    searchPokemon = pokemon;
+  }
+
+  @action
+  void filterPokemons(String pokemon) {
+    setSearchPokemon(pokemon);
   }
 }

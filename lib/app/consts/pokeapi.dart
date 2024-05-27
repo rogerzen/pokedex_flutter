@@ -3,5 +3,5 @@ class PokeApi {
   static const detailsURL = 'https://pokeapi.co/api/v2/pokemon/';
   static const pokemonsURL = 'https://pokeapi.co/api/v2/pokemon?limit=';
 
-  static const pokeNumber = 10;
+  static const pokeNumber = 151;
 }
