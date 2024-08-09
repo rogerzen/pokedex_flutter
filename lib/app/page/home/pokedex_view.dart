@@ -52,17 +52,32 @@ class _PokedexViewState extends State<PokedexView> {
           Container(
             margin:
                 const EdgeInsets.only(top: 32, bottom: 16, left: 16, right: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
             child: TextField(
               onChanged: (pokemon) {
                 store.setSearchPokemon(pokemon);
               },
-              decoration: const InputDecoration(
-                hintText: 'Pesquise um Pokemon',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                hintStyle: TextStyle(color: Colors.black54),
-              ),
+              decoration: InputDecoration(
+                  hintText: 'Pesquise um Pokemon',
+                  hintStyle: const TextStyle(color: Colors.black54),
+                  border: InputBorder.none,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide:
+                        const BorderSide(color: Colors.blueAccent, width: 2),
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20)),
             ),
           ),
           Expanded(

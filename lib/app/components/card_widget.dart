@@ -1,9 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokedex_flutter/app/config/app_colors.dart';
 
-import '../config/app_colors.dart';
 import '../data/models/abilities_pokemon_model.dart';
 import '../data/models/pokemon_model.dart';
 import '../data/models/types_pokemon_model.dart';
@@ -20,17 +18,18 @@ class CardPokemon extends StatelessWidget {
   final List<TypesPokemon> types;
   final List<AbilitiesPokemon> abilities;
 
-  const CardPokemon(
-      {super.key,
-      this.colorType,
-      required this.name,
-      required this.url,
-      required this.image,
-      required this.id,
-      required this.weight,
-      required this.height,
-      required this.types,
-      required this.abilities});
+  const CardPokemon({
+    super.key,
+    this.colorType,
+    required this.name,
+    required this.url,
+    required this.image,
+    required this.id,
+    required this.weight,
+    required this.height,
+    required this.types,
+    required this.abilities,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,89 +44,86 @@ class CardPokemon extends StatelessWidget {
                 url: url,
                 image: image,
                 id: id,
-                weight: 0,
-                height: 0,
-                types: [],
-                abilities: [],
+                weight: weight,
+                height: height,
+                types: types,
+                abilities: abilities,
               ),
             ),
           ),
         );
       },
       child: Container(
-        margin: const EdgeInsets.only(right: 8, left: 8),
-        width: MediaQuery.of(context).size.width,
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.4),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
         child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          borderRadius: BorderRadius.circular(15),
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 0.5),
               gradient: LinearGradient(
-                colors: [AppColors.white, colorType ?? AppColors.white],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+                colors: [
+                  colorType?.withOpacity(0.8) ?? Colors.grey.shade200,
+                  Colors.white,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
             child: Padding(
-              padding:
-                  const EdgeInsets.only(right: 8, left: 8, top: 32, bottom: 0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.network(
                     image,
                     height: 100,
                   ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Column(
-                      children: [
-                        Text(
-                          name.toUpperCase(),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
+                  const SizedBox(height: 16),
+                  Text(
+                    name.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: types.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        alignment: Alignment.center,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: colorType?.withOpacity(0.2) ?? AppColors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: colorType ?? Colors.grey,
                           ),
                         ),
-                        ListView.builder(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          itemCount: types.length,
-                          itemBuilder: (context, index) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.all(2),
-                                  alignment: Alignment.center,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            AppColors.white,
-                                            colorType ?? AppColors.white
-                                          ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: Colors.black,
-                                      )),
-                                  child: Text(
-                                    types[index].name,
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 25),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
+                        child: Text(
+                          types[index].name,
+                          style: TextStyle(
+                            color: colorType ?? Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                 ],
               ),
