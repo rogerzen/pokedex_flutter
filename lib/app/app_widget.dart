@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         title: 'PokeFlutter',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+          colorScheme: const ColorScheme.light(),
           useMaterial3: true,
         ),
         routes: {
