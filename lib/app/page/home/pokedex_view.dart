@@ -95,26 +95,6 @@ class _PokedexViewState extends State<PokedexView> {
           ),
           Observer(
             builder: (context) {
-              if (store.isLoading) {
-                return const SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
-              if (store.erro.isNotEmpty) {
-                return SliverFillRemaining(
-                  child: Center(
-                    child: Text(
-                      store.erro,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                );
-              }
               final filteredPokemon = store.filteredPokemons;
               if (filteredPokemon.isEmpty) {
                 return const SliverFillRemaining(

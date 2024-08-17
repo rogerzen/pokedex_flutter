@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pokedex_flutter/app/page/home/pokedex_view.dart';
 import 'package:provider/provider.dart';
 
@@ -12,44 +13,88 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
-  var width = 0.0;
-  var height = 0.0;
+  late final PokemonStore store;
+  var width = 50.0;
+  var height = 50.0;
+  late DateTime startTime;
 
   @override
   void initState() {
-    final store = Provider.of<PokemonStore>(context, listen: false);
-    store.getPokemons();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) async {
-        setState(() {
-          width = 250.0;
-          height = 250.0;
-        });
-        final nav = Navigator.of(context);
-        await Future.delayed(const Duration(seconds: 4));
-        nav.pushReplacement(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const PokedexView(),
-            settings: const RouteSettings(name: '/home'),
-          ),
-        );
-      },
-    );
     super.initState();
+    store = Provider.of<PokemonStore>(context, listen: false);
+    startTime = DateTime.now();
+    store.getPokemons();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() {
+        width = 250.0;
+        height = 250.0;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: AnimatedContainer(
-          duration: const Duration(seconds: 3),
-          width: width,
-          height: height,
-          child: Hero(
-              tag: 'imageSplash',
-              child: Image.asset('./assets/pokemon_splash.png')),
+      body: SafeArea(
+        child: Observer(
+          builder: (context) {
+            if (store.isLoading) {
+              return Center(
+                child: AnimatedContainer(
+                  duration: Duration(
+                      milliseconds: DateTime.now().difference(startTime).inMicroseconds),
+                  width: width,
+                  height: height,
+                  child: Hero(
+                    tag: 'imageSplash',
+                    child: Image.asset('./assets/pokemon_splash.png'),
+                  ),
+                ),
+              );
+            }
+            if (store.erro.isNotEmpty) {
+              return Center(
+                child: Text(
+                  store.erro,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              );
+            }
+            final filteredPokemon = store.filteredPokemons;
+            if (filteredPokemon.isEmpty) {
+              return const Center(
+                child: Text(
+                  'Nenhum Pokemon na lista',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ),
+                ),
+              );
+            } else {
+              // Navega para a próxima tela após os Pokémons serem carregados
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                final nav = Navigator.of(context);
+                nav.pushReplacement(
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                    const PokedexView(),
+                    settings: const RouteSettings(name: '/home'),
+                  ),
+                );
+              });
+
+              // Retorna um widget vazio enquanto espera a navegação
+              return Container();
+            }
+          },
         ),
       ),
     );
