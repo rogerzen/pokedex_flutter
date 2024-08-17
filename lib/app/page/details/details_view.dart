@@ -30,45 +30,38 @@ class _DetailsPokemonViewState extends State<DetailsPokemonView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Observer(
-          builder: (context) {
-            if (store.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (store.erro.isNotEmpty) {
-              return Text(
-                store.erro,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
-                ),
-                textAlign: TextAlign.center,
-              );
-            } else {
-              PokemonModel entity = store.state!;
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Observer(
+            builder: (context) {
+              if (store.isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (store.erro.isNotEmpty) {
+                return Text(
+                  store.erro,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
+                );
+              } else {
+                PokemonModel entity = store.state!;
 
-              return SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CardDetails(
-                        name: entity.name,
-                        url: entity.url,
-                        image: entity.image,
-                        id: entity.id,
-                        weight: entity.weight,
-                        height: entity.height,
-                        types: entity.types,
-                        abilities: entity.abilities),
-                  ],
-                ),
-              );
-            }
-          },
+                return CardDetails(
+                    name: entity.name,
+                    url: entity.url,
+                    image: entity.image,
+                    id: entity.id,
+                    weight: entity.weight,
+                    height: entity.height,
+                    types: entity.types,
+                    abilities: entity.abilities);
+              }
+            },
+          ),
         ),
       ),
     );

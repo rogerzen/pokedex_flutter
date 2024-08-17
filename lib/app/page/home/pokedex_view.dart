@@ -15,6 +15,7 @@ class PokedexView extends StatefulWidget {
 
 class _PokedexViewState extends State<PokedexView> {
   late final PokemonStore store;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -24,7 +25,16 @@ class _PokedexViewState extends State<PokedexView> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   @override
@@ -47,47 +57,52 @@ class _PokedexViewState extends State<PokedexView> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Container(
-            margin:
-                const EdgeInsets.only(top: 32, bottom: 16, left: 16, right: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: TextField(
-              onChanged: (pokemon) {
-                store.setSearchPokemon(pokemon);
-              },
-              decoration: InputDecoration(
-                  hintText: 'Pesquise um Pokemon',
-                  hintStyle: const TextStyle(color: Colors.black54),
-                  border: InputBorder.none,
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide:
-                        const BorderSide(color: Colors.blueAccent, width: 2),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverToBoxAdapter(
+            child: Container(
+              margin:
+                  const EdgeInsets.only(top: 16, bottom: 16, left: 8, right: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
                   ),
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20)),
+                ],
+              ),
+              child: TextField(
+                onChanged: (pokemon) {
+                  store.setSearchPokemon(pokemon);
+                },
+                decoration: InputDecoration(
+                    hintText: 'Pesquise um Pokemon',
+                    hintStyle: const TextStyle(color: Colors.black54),
+                    border: InputBorder.none,
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                          const BorderSide(color: Colors.blueAccent, width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 20)),
+              ),
             ),
           ),
-          Expanded(
-            child: Observer(
-              builder: (context) {
-                if (store.isLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (store.erro.isNotEmpty) {
-                  return Center(
+          Observer(
+            builder: (context) {
+              if (store.isLoading) {
+                return const SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              if (store.erro.isNotEmpty) {
+                return SliverFillRemaining(
+                  child: Center(
                     child: Text(
                       store.erro,
                       style: const TextStyle(
@@ -97,11 +112,13 @@ class _PokedexViewState extends State<PokedexView> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                  );
-                }
-                final filteredPokemon = store.filteredPokemons;
-                if (filteredPokemon.isEmpty) {
-                  return const Center(
+                  ),
+                );
+              }
+              final filteredPokemon = store.filteredPokemons;
+              if (filteredPokemon.isEmpty) {
+                return const SliverFillRemaining(
+                  child: Center(
                     child: Text(
                       'Nenhum Pokemon na lista',
                       style: TextStyle(
@@ -110,19 +127,18 @@ class _PokedexViewState extends State<PokedexView> {
                         fontSize: 20,
                       ),
                     ),
-                  );
-                } else {
-                  return GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Colunas
-                      crossAxisSpacing: 0, // Entre Colunas
-                      childAspectRatio: 0.7,
-                      mainAxisSpacing: 10,
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    itemCount: filteredPokemon.length,
-                    itemBuilder: (_, index) {
+                  ),
+                );
+              } else {
+                return SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, // Numero de Pokemos por grid
+                    crossAxisSpacing: 0,
+                    childAspectRatio: 0.7,
+                    mainAxisSpacing: 5, // entre altura cards
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
                       final item = filteredPokemon[index];
                       final itemCount = index + 1;
 
@@ -145,12 +161,21 @@ class _PokedexViewState extends State<PokedexView> {
                         abilities: item.abilities,
                       );
                     },
-                  );
-                }
-              },
-            ),
+                    childCount: filteredPokemon.length,
+                  ),
+                );
+              }
+            },
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _scrollToTop,
+        backgroundColor: Colors.white,
+        child: const Icon(
+          Icons.arrow_upward_rounded,
+          color: Colors.blueAccent,
+        ),
       ),
     );
   }
