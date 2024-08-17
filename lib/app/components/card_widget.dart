@@ -95,10 +95,12 @@ class CardPokemon extends StatelessWidget {
                       color: Colors.black87,
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const SizedBox(height: 8),
                   ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     itemCount: types.length,
