@@ -12,25 +12,33 @@ class SplashView extends StatefulWidget {
   State<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashViewState extends State<SplashView> {
+class _SplashViewState extends State<SplashView> with SingleTickerProviderStateMixin {
   late final PokemonStore store;
-  var width = 50.0;
-  var height = 50.0;
-  late DateTime startTime;
+  late AnimationController _controller;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
     store = Provider.of<PokemonStore>(context, listen: false);
-    startTime = DateTime.now();
     store.getPokemons();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        width = 250.0;
-        height = 250.0;
-      });
-    });
+    // Configuração da animação
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(begin: -20.0, end: 20.0).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -40,19 +48,41 @@ class _SplashViewState extends State<SplashView> {
         child: Observer(
           builder: (context) {
             if (store.isLoading) {
-              return Center(
-                child: AnimatedContainer(
-                  duration: Duration(
-                      milliseconds: DateTime.now().difference(startTime).inMicroseconds),
-                  width: width,
-                  height: height,
-                  child: Hero(
-                    tag: 'imageSplash',
-                    child: Image.asset('./assets/pokemon_splash.png'),
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  AnimatedBuilder(
+                    animation: _animation,
+                    builder: (context, child) {
+                      return Positioned(
+                        left: MediaQuery.of(context).size.width / 2 - 125,
+                        top: MediaQuery.of(context).size.height / 2 - 125 + _animation.value,
+                        child: Hero(
+                          tag: 'imageSplash',
+                          child: Image.asset(
+                            './assets/pokemon_splash.png',
+                            width: 250,
+                            height: 250,
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                ),
+                  // Barra de progresso
+                  Positioned(
+                    bottom: 20.0,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: LinearProgressIndicator(
+                        backgroundColor: Colors.grey[300],
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                      ),
+                    ),
+                  ),
+                ],
               );
             }
+
             if (store.erro.isNotEmpty) {
               return Center(
                 child: Text(
@@ -66,6 +96,7 @@ class _SplashViewState extends State<SplashView> {
                 ),
               );
             }
+
             final filteredPokemon = store.filteredPokemons;
             if (filteredPokemon.isEmpty) {
               return const Center(
@@ -81,12 +112,20 @@ class _SplashViewState extends State<SplashView> {
             } else {
               // Navega para a próxima tela após os Pokémons serem carregados
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                final nav = Navigator.of(context);
-                nav.pushReplacement(
+                Navigator.of(context).pushReplacement(
                   PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                    const PokedexView(),
-                    settings: const RouteSettings(name: '/home'),
+                    pageBuilder: (context, animation, secondaryAnimation) => const PokedexView(),
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      // Define a animação de transição
+                      const begin = Offset(1.0, 0.0); // Desliza da direita para a esquerda
+                      const end = Offset.zero;
+                      const curve = Curves.easeInOut;
+
+                      var tween = Tween(begin: begin, end: end);
+                      var offsetAnimation = animation.drive(tween.chain(CurveTween(curve: curve)));
+
+                      return SlideTransition(position: offsetAnimation, child: child);
+                    },
                   ),
                 );
               });
